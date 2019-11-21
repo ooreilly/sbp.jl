@@ -1,0 +1,13 @@
+name = "sbpjl"
+uuid = "e99954d4-d2fc-47ba-bdd5-f71aa6a6ad6a"
+authors = ["Ossian O'Reilly"]
+version = "0.1.0"
+
+[compat]
+julia = "1.2"
+
+[extras]
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[targets]
+test = ["Test"]
