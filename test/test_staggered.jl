@@ -18,6 +18,11 @@ yp, ym, h, Dyp, Dym, Hyp, Hym, Pyp, Pym = build_operators(ny)
         @test size(Bp, 2) == nx + 1
         @test isapprox(sum(Bp), 0)
 
+        Bp = boundary_matrix_p(nx, true)
+        @test size(Bp, 1) == nx
+        @test size(Bp, 2) == nx + 1
+        @test isapprox(sum(Bp), 0)
+
         Bm = boundary_matrix_m(nx+1)
         @test size(Bm, 1) == nx + 1
         @test size(Bm, 2) == nx
