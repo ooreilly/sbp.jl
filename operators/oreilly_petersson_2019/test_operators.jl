@@ -9,8 +9,6 @@ include("operators.jl")
 
 using . Operators: build_operators, ODp, ODm, OPp, OPm
 
-path = string(@__DIR__, "/")
-
 m = 10 
 
 xp, xm, h, Dp, Dm, Hp, Hm, Pp, Pm = build_operators(m)
