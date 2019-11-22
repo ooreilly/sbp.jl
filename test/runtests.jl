@@ -1,6 +1,6 @@
-using sbpjl
+using sbp
 using Test
 
-@testset "sbpjl.jl" begin
-    # Write your own tests here.
-end
+include("test_grid.jl")
+include("test_operator.jl")
+include("test_operators.jl")

@@ -6,6 +6,7 @@ os:
 julia:
   - 1.2
   - nightly
+codecov: true
 matrix:
   allow_failures:
     - julia: nightly

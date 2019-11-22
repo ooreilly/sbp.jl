@@ -1,7 +1,13 @@
-name = "sbpjl"
+name = "sbp"
 uuid = "e99954d4-d2fc-47ba-bdd5-f71aa6a6ad6a"
 authors = ["Ossian O'Reilly"]
 version = "0.1.0"
+
+[deps]
+DelimitedFiles = "8bb1440f-4735-579b-a4ab-409b98df4dab"
+Printf = "de0858da-6303-5e67-8744-51eddeeeb8d7"
+SparseArrays = "2f01184e-e22b-5df5-ae63-d93ebab69eaf"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
 
 [compat]
 julia = "1.2"
