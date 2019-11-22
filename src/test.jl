@@ -51,6 +51,21 @@ function test_quadrature(H::AbstractArray, x::AbstractArray, pv::Int64)
         end
 end
 
+function test_first_derivative_sbp(Hp::AbstractArray, 
+                                   Dp::AbstractArray,
+                                   Hm::AbstractArray,
+                                   Dm::AbstractArray,
+                                   B::AbstractArray)
+        @test isapprox(Hp*Dp + (Hm*Dm)', B)
+end
+
+function test_interpolation_sbp(Hp::AbstractArray, 
+                                Dp::AbstractArray,
+                                Hm::AbstractArray,
+                                Dm::AbstractArray)
+        @test isapprox(Hp*Dp,  (Hm*Dm)')
+end
+
 function interior(x::AbstractArray, ml::Int64, mr::Int64)
         return x[ml+1:size(x,1) - mr]
 end

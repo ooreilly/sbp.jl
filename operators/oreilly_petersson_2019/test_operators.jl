@@ -3,7 +3,8 @@ using Test
 import sbp
 using sbp.Operator: read_operator, to_matrix
 using sbp.Grid:grid_xp, grid_xm
-using sbp.Test:test_first_derivative, test_quadrature, test_interpolation
+using sbp.Test:test_first_derivative, test_quadrature, test_interpolation,
+        test_first_derivative_sbp, test_interpolation_sbp
 include("operators.jl")
 
 using . Operators: build_operators, ODp, ODm, OPp, OPm
@@ -48,6 +49,17 @@ end
 @testset "Hm_42" begin
         test_quadrature(Hm, xm, 3)
 
+end
+
+@testset "D_SBP" begin
+        B = 0*Dp
+        B[1,1] = -1
+        B[end,end] = 1
+        test_first_derivative_sbp(Hp, Dp, Hm, Dm, B)
+end
+
+@testset "P_SBP" begin
+        test_interpolation_sbp(Hp, Pp, Hm, Pm)
 end
 
 end
