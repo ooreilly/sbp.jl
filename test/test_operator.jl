@@ -86,8 +86,6 @@ end
         end
 
         @testset "to_vector" begin
-
-                
                 left = zeros(1, 2)
                 interior = zeros(1)
                 left[1] = -1.0
