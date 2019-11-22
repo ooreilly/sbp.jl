@@ -3,37 +3,50 @@ using Test
 import sbp
 using sbp.Operator: read_operator, to_matrix
 using sbp.Grid:grid_xp, grid_xm
-using sbp.Test:test_first_derivative, test_quadrature
+using sbp.Test:test_first_derivative, test_quadrature, test_interpolation
+include("operators.jl")
+
+using . Operators: build_operators, ODp, ODm, OPp, OPm
 
 path = string(@__DIR__, "/")
 
 m = 10 
-n = 10 
-xm, h = grid_xm(m+1)
-xp, h = grid_xp(m)
+
+xp, xm, h, Dp, Dm, Hp, Hm, Pp, Pm = build_operators(m)
 
 @time begin
 
 @testset "Dp_42" begin
-        op = read_operator(string(path,  "Dp_42.txt"))
-        Dp = to_matrix(op, m, m + 1) / h
-        ml = size(op.left, 1)
-        mr = size(op.right, 1)
+        ml = size(ODp.left, 1)
+        mr = size(ODp.right, 1)
         test_first_derivative(Dp, xp, xm, 4, 2, ml, mr)
 end
 
 @testset "Dm_42" begin
-        op = read_operator(string(path,  "Dm_42.txt"))
-        Dm = to_matrix(op, m + 1, m) / h
-        ml = size(op.left, 1)
-        mr = size(op.right, 1)
+        ml = size(ODm.left, 1)
+        mr = size(ODm.right, 1)
         test_first_derivative(Dm, xm, xp, 4, 2, ml, mr)
 end
 
+@testset "Pp_42" begin
+        ml = size(OPp.left, 1)
+        mr = size(OPp.right, 1)
+        test_interpolation(Pp, xp, xm, 3, 1, ml, mr)
+end
+
+@testset "Pm_42" begin
+        ml = size(OPm.left, 1)
+        mr = size(OPm.right, 1)
+        test_interpolation(Pm, xm, xp, 3, 1, ml, mr)
+end
+
 @testset "Hp_42" begin
-        op = read_operator(string(path,  "Hp_42.txt"))
-        Hp = to_matrix(op, m, m) * h
         test_quadrature(Hp, xp, 3)
+
+end
+
+@testset "Hm_42" begin
+        test_quadrature(Hm, xm, 3)
 
 end
 
