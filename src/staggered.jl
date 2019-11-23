@@ -1,19 +1,9 @@
 module Staggered
 using SparseArrays, LinearAlgebra
-
-
-struct operators_2d
-        nx::Int64
-        ny::Int64
-        Dx::AbstractArray
-        Dy::AbstractArray
-        Px::AbstractArray
-        Py::AbstractArray
-        Hx::AbstractArray
-        Hy::AbstractArray
-        Bx::AbstractArray
-        By::AbstractArray
-end
+include("operator.jl")
+include("metrics.jl")
+using .Operator: Operators2D
+using .Metrics: CovariantBasis
 
 function boundary_matrix_p(n, is_sparse=true)
         if is_sparse
@@ -59,7 +49,7 @@ function build_operators_2d(Dx::AbstractArray,
         Bx2 = kron(Bx, Iy)
         By2 = kron(Ix, By)
 
-        return operators_2d(nx, ny, Dx2, Dy2, Px2, Py2, Hx2, Hy2, Bx2, By2)
+        return Operators2D(nx, ny, Dx2, Dy2, Px2, Py2, Hx2, Hy2, Bx2, By2)
                 
 end
 
@@ -78,6 +68,22 @@ function build_all_operators_2d(builder::Function, nx::Int64, ny::Int64)
         mp = build_operators_2d(Dxm, Dyp, Pxm, Pyp, Hxm, Hyp, Bxm, Byp)
 
         return pp, mm, pm, mp
+end
+
+
+"""
+Construct the covariant basis at the cell centers (mm) using SBP operators at
+the v1 (pm) and v2 (mp) grid locations. The mapping function f(x,y) = (fx, fy)
+must be defined at the nodes (pp). 
+"""
+function build_covariant_basis(fx::AbstractArray, fy::AbstractArray,
+                               mm::Operators2D, pm::Operators2D)
+        x_r1 = mm.Dx * pm.Py * fx
+        x_r2 = mm.Px * pm.Dy * fx
+        y_r1 = mm.Dx * pm.Py * fy
+        y_r2 = mm.Px * pm.Dy * fy
+
+        return CovariantBasis(x_r1, x_r2, y_r1, y_r2)
 end
 
 end

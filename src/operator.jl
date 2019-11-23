@@ -24,6 +24,19 @@ struct OperatorData
  offset::Int64
 end
 
+struct Operators2D
+        nx::Int64
+        ny::Int64
+        Dx::AbstractArray
+        Dy::AbstractArray
+        Px::AbstractArray
+        Py::AbstractArray
+        Hx::AbstractArray
+        Hy::AbstractArray
+        Bx::AbstractArray
+        By::AbstractArray
+end
+
 version = Version(1, 0, 0)
 
 function to_matrix(op::OperatorData, m::Int64, n::Int64, is_sparse::Bool=false)

@@ -1,11 +1,11 @@
 using Test
 import sbp
 using sbp.Staggered: boundary_matrix_p, boundary_matrix_m, build_operators_2d,
-                     build_all_operators_2d
+                     build_all_operators_2d, build_covariant_basis
 
 
 include("../operators/oreilly_petersson_2019/operators.jl")
-using . Operators: build_operators, ODp, ODm, OPp, OPm
+using . Operators: build_operators
 
 nx = 10
 ny = 20
@@ -75,5 +75,27 @@ end
         @test size(mp.Bx) == size(mp.Bx)
         @test size(mp.By) == size(mp.By)
 
+end
+
+@testset "Covariant basis" begin
+
+        pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
+        fx = ones(pp.nx*pp.ny)
+        fy = ones(pp.nx*pp.ny)
+        a = build_covariant_basis(fx, fy, mm, pm)
+
+        x_r1 = zeros(mm.nx * mm.ny) 
+        x_r2 = zeros(mm.nx * mm.ny) 
+        y_r1 = zeros(mm.nx * mm.ny) 
+        y_r2 = zeros(mm.nx * mm.ny) 
+
+        @test size(a.x_r1) == size(a.x_r2)
+        @test size(a.x_r1) == size(a.y_r1)
+        @test size(a.x_r1) == size(a.y_r2)
+
+        @test isapprox(a.x_r1, x_r1, atol=1.0)
+        @test isapprox(a.x_r2, x_r2, atol=1.0)
+        @test isapprox(a.y_r1, y_r1, atol=1.0)
+        @test isapprox(a.y_r2, y_r2, atol=1.0)
 end
 
