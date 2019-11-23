@@ -1,9 +1,8 @@
 module Staggered
 using SparseArrays, LinearAlgebra
-include("operator.jl")
-include("metrics.jl")
-using .Operator: Operators2D
-using .Metrics: CovariantBasis
+import sbp
+using sbp.Operator: Operators2D
+using sbp.Metrics: CovariantBasis
 
 function boundary_matrix_p(n, is_sparse=true)
         if is_sparse
@@ -83,7 +82,7 @@ function build_covariant_basis(fx::AbstractArray, fy::AbstractArray,
         y_r1 = mm.Dx * pm.Py * fy
         y_r2 = mm.Px * pm.Dy * fy
 
-        return CovariantBasis(x_r1, x_r2, y_r1, y_r2)
+        return CovariantBasis(x_r1, y_r1, x_r2, y_r2)
 end
 
 end
