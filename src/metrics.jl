@@ -19,6 +19,21 @@ struct ContravariantBasis
         r2_y::AbstractArray 
 end
 
+
+struct CovariantMetricTensor
+        a11::AbstractArray
+        a12::AbstractArray
+        a21::AbstractArray
+        a22::AbstractArray
+end
+
+struct ContravariantMetricTensor
+        b11::AbstractArray
+        b12::AbstractArray
+        b21::AbstractArray
+        b22::AbstractArray
+end
+
 function build_jacobian(a::CovariantBasis)
         return a.x_r1 .* a.y_r2 - a.x_r2 .* a.y_r1
 end
@@ -31,10 +46,18 @@ function build_contravariant_basis(J::AbstractArray, a::CovariantBasis)
 
 end
 
+function build_covariant_metric_tensor(a::CovariantBasis)
+        return CovariantMetricTensor(a.x_r1 .* a.x_r1 + a.y_r1 .* a.y_r1, 
+                                     a.x_r1 .* a.x_r2 + a.y_r1 .* a.y_r2,
+                                     a.x_r2 .* a.x_r1 + a.y_r2 .* a.y_r1,
+                                     a.x_r2 .* a.x_r2 + a.y_r2 .* a.y_r2)
+end
 
-function covariant_metric_tensor()
-
-
+function build_contravariant_metric_tensor(b::ContravariantBasis)
+        return ContravariantMetricTensor(b.r1_x .* b.r1_x + b.r1_y .* b.r1_y, 
+                                         b.r1_x .* b.r2_x + b.r1_y .* b.r2_y,
+                                         b.r2_x .* b.r1_x + b.r2_y .* b.r1_y,
+                                         b.r2_x .* b.r2_x + b.r2_y .* b.r2_y)
 end
 
 end
