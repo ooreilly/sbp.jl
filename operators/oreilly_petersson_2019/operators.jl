@@ -29,11 +29,11 @@ function build_operators(m::Int64, is_sparse::Bool=true)
         Dp = to_matrix(ODp, m, m + 1, is_sparse) / h
         Dm = to_matrix(ODm, m + 1, m, is_sparse) / h
 
-        Hp = to_matrix(OHp, m, m) * h
-        Hm = to_matrix(OHm, m + 1, m + 1) * h
+        Hp = to_matrix(OHp, m, m, is_sparse) * h
+        Hm = to_matrix(OHm, m + 1, m + 1, is_sparse) * h
 
-        Pp = to_matrix(OPp, m, m + 1)
-        Pm = to_matrix(OPm, m + 1, m)
+        Pp = to_matrix(OPp, m, m + 1, is_sparse)
+        Pm = to_matrix(OPm, m + 1, m, is_sparse)
 
         return xp, xm, h, Dp, Dm, Hp, Hm, Pp, Pm
 
