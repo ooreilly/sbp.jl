@@ -5,7 +5,7 @@ using sbp.Config: Tv
 using sbp.Metrics: build_jacobian, build_contravariant_basis, 
                    build_covariant_metric_tensor, 
                    build_contravariant_metric_tensor
-using sbp.Staggered: build_all_operators_2d, build_covariant_basis
+using sbp.Staggered: build_all_operators_2d, build_covariant_basis_mm
 using sbp.Grid: grid_xp, grid_xm, grid_2d_x, grid_2d_y
 
 include("../operators/oreilly_petersson_2019/operators.jl")
@@ -25,7 +25,7 @@ y = grid_2d_y(y1, ny)
 fx = x
 fy = y
 
-a = build_covariant_basis(fx, fy, mm, pm)
+a = build_covariant_basis_mm(fx, fy, mm, pm)
 Ga = build_covariant_metric_tensor(a)
 
 
