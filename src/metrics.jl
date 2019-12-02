@@ -1,4 +1,5 @@
 module Metrics
+using SparseArrays
 
 
 struct CovariantBasis
@@ -58,6 +59,13 @@ function build_contravariant_metric_tensor(b::ContravariantBasis)
                                          b.r1_x .* b.r2_x + b.r1_y .* b.r2_y,
                                          b.r2_x .* b.r1_x + b.r2_y .* b.r1_y,
                                          b.r2_x .* b.r2_x + b.r2_y .* b.r2_y)
+end
+
+function contravariant_metric_tensor_to_matrix(G::ContravariantMetricTensor)
+        return ContravariantMetricTensor(spdiagm(0 => G.b11), 
+                                         spdiagm(0 => G.b12), 
+                                         spdiagm(0 => G.b21), 
+                                         spdiagm(0 => G.b22))
 end
 
 end

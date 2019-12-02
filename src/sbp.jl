@@ -9,5 +9,7 @@ include("sparse.jl")
 include("staggered.jl")
 include("test.jl")
 
+include("staggered/acoustic.jl")
+
 
 end # module
