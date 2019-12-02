@@ -2,7 +2,8 @@ using Test
 import sbp
 using sbp.Staggered: boundary_matrix_p, boundary_matrix_m, build_operators_2d,
                      build_all_operators_2d, build_covariant_basis_mm, 
-                     build_covariant_basis_pm
+                     build_covariant_basis_pm, 
+                     build_covariant_basis_mp
 
 
 include("../operators/oreilly_petersson_2019/operators.jl")
@@ -111,6 +112,28 @@ end
         x_r2 = zeros(pm.nx * pm.ny) 
         y_r1 = zeros(pm.nx * pm.ny) 
         y_r2 = zeros(pm.nx * pm.ny) 
+
+        @test size(a.x_r1) == size(a.x_r2)
+        @test size(a.x_r1) == size(a.y_r1)
+        @test size(a.x_r1) == size(a.y_r2)
+
+        @test isapprox(a.x_r1, x_r1, atol=1.0)
+        @test isapprox(a.x_r2, x_r2, atol=1.0)
+        @test isapprox(a.y_r1, y_r1, atol=1.0)
+        @test isapprox(a.y_r2, y_r2, atol=1.0)
+end
+
+@testset "Covariant basis (v2)" begin
+
+        pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
+        fx = ones(pp.nx * pp.ny)
+        fy = ones(pp.nx * pp.ny)
+        a = build_covariant_basis_mp(fx, fy, mm, pm, mp)
+
+        x_r1 = zeros(mp.nx * mp.ny) 
+        x_r2 = zeros(mp.nx * mp.ny) 
+        y_r1 = zeros(mp.nx * mp.ny) 
+        y_r2 = zeros(mp.nx * mp.ny) 
 
         @test size(a.x_r1) == size(a.x_r2)
         @test size(a.x_r1) == size(a.y_r1)

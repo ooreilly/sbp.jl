@@ -3,6 +3,7 @@ using SparseArrays, LinearAlgebra
 import sbp
 using sbp.Operator: Operators2D
 using sbp.Metrics: CovariantBasis
+using sbp.Sparse: block_matrix, block_matrix_insert
 
 function boundary_matrix_p(n, is_sparse=true)
         if is_sparse
@@ -98,5 +99,21 @@ function build_covariant_basis_pm(fx::AbstractArray, fy::AbstractArray,
 
         return CovariantBasis(x_r1, y_r1, x_r2, y_r2)
 end
+
+"""
+Construct the covariant basis at the v^2 components (mp) using SBP operators.
+The mapping function f(x,y) = (fx, fy) must be defined at the nodes (pp). 
+"""
+function build_covariant_basis_mp(fx::AbstractArray, fy::AbstractArray,
+                               mm::Operators2D, pm::Operators2D,
+                               mp::Operators2D)
+        x_r1 = mp.Dx * fx
+        x_r2 = mp.Py * mm.Px * pm.Dy * fx
+        y_r1 = mp.Dx * fy
+        y_r2 = mp.Py * mm.Px * pm.Dy * fy
+
+        return CovariantBasis(x_r1, y_r1, x_r2, y_r2)
+end
+
 
 end
