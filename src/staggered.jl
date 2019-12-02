@@ -71,16 +71,30 @@ end
 
 
 """
-Construct the covariant basis at the cell centers (mm) using SBP operators at
-the v1 (pm) and v2 (mp) grid locations. The mapping function f(x,y) = (fx, fy)
-must be defined at the nodes (pp). 
+Construct the covariant basis at the cell centers (mm) using SBP operators.
+The mapping function f(x,y) = (fx, fy) must be defined at the nodes (pp). 
 """
-function build_covariant_basis(fx::AbstractArray, fy::AbstractArray,
+function build_covariant_basis_mm(fx::AbstractArray, fy::AbstractArray,
                                mm::Operators2D, pm::Operators2D)
         x_r1 = mm.Dx * pm.Py * fx
         x_r2 = mm.Px * pm.Dy * fx
         y_r1 = mm.Dx * pm.Py * fy
         y_r2 = mm.Px * pm.Dy * fy
+
+        return CovariantBasis(x_r1, y_r1, x_r2, y_r2)
+end
+
+"""
+Construct the covariant basis at the v^1 components (pm) using SBP operators.
+The mapping function f(x,y) = (fx, fy) must be defined at the nodes (pp). 
+"""
+function build_covariant_basis_pm(fx::AbstractArray, fy::AbstractArray,
+                               mm::Operators2D, pm::Operators2D,
+                               mp::Operators2D)
+        x_r1 = pm.Px * mm.Py * mp.Dx * fx
+        x_r2 = pm.Dy * fx
+        y_r1 = pm.Px * mm.Py * mp.Dx * fy
+        y_r2 = pm.Dy * fy
 
         return CovariantBasis(x_r1, y_r1, x_r2, y_r2)
 end
