@@ -86,4 +86,41 @@ B[row_offset:row_offset+r[i+1]-1,col_offset:col_offset+c[j+1]-1] = block
 return B
 end
 
+
+function block_matrix_2x2(a11::AbstractArray, 
+                          a12::AbstractArray,
+                          a21::AbstractArray,
+                          a22::AbstractArray)
+        m1 = size(a11, 1)
+        n1 = size(a11, 2)
+        m2 = size(a22, 1)
+        n2 = size(a22, 2)
+        @assert size(a12, 1) == size(a11, 1)
+        @assert size(a12, 2) == size(a22, 2)
+        @assert size(a21, 1) == size(a21, 2)
+        @assert size(a21, 2) == size(a22, 1)
+        rows = [m1, m2]
+        cols = [n1, n2]
+        A = block_matrix(rows, cols)
+        A = block_matrix_insert(A, rows, cols, 1, 1, a11)
+        A = block_matrix_insert(A, rows, cols, 1, 2, a12)
+        A = block_matrix_insert(A, rows, cols, 2, 1, a21)
+        A = block_matrix_insert(A, rows, cols, 2, 2, a22)
+return A
+end
+
+function diag_block_matrix_2x2(a11::AbstractArray,
+                               a22::AbstractArray)
+        m1 = size(a11, 1)
+        n1 = size(a11, 2)
+        m2 = size(a22, 1)
+        n2 = size(a22, 2)
+        rows = [m1, m2]
+        cols = [n1, n2]
+        A = block_matrix(rows, cols)
+        A = block_matrix_insert(A, rows, cols, 1, 1, a11)
+        A = block_matrix_insert(A, rows, cols, 2, 2, a22)
+return A
+end
+
 end
