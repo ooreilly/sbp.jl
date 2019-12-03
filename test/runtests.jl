@@ -9,3 +9,5 @@ include("test_staggered.jl")
 include("test_metrics.jl")
 include("test_vtk.jl")
 include("test_staggered_acoustic.jl")
+
+include("test_lsrk4.jl")

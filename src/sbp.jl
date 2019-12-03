@@ -8,8 +8,11 @@ include("sparse.jl")
 include("vtk.jl")
 include("test.jl")
 
-include("staggered.jl")
+# Time integrators
+include("time_integrators/lsrk4.jl")
 
+# Staggered operators and discretizations
+include("staggered.jl")
 include("staggered/acoustic.jl")
 
 
