@@ -19,7 +19,16 @@ function boundary_matrix_p(n, is_sparse=true)
 end
 
 function boundary_matrix_m(n, is_sparse=true)
-        return boundary_matrix_p(n - 1, is_sparse)'
+        if is_sparse
+                B = spzeros(n, n - 1)
+        else
+                B = zeros(n, n - 1)
+        end
+
+        B[1,1] = -1
+        B[end,end] = 1
+
+        return B
 end
 
 function build_operators_2d(Dx::AbstractArray, 
