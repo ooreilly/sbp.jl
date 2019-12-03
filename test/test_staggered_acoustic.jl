@@ -7,7 +7,9 @@ using sbp.Staggered: build_all_operators_2d,
                    build_covariant_basis_pm,
                    build_covariant_basis_mp
 using sbp.StaggeredAcoustic: init_operators, pressure_norm, velocity_norm,
-        contravariant_metric_tensor
+                             energy_norm, contravariant_metric_tensor, 
+                             divergence, gradient,
+                             spatial_discretization, sat_pressure
 using sbp.Sparse: diag_block_matrix_2x2
 using sbp.Grid: grid_xp, grid_xm, grid_2d_x, grid_2d_y
 
@@ -33,6 +35,11 @@ HJp = pressure_norm(ops)
 HJ = velocity_norm(ops)
 Gp = contravariant_metric_tensor(ops)
 Ek = HJ*Gp
+Ap = divergence(ops)
+Av = gradient(ops, Gp)
+S = sat_pressure(ops, Gp)
+H = energy_norm(HJp, HJ, Gp)
+A = spatial_discretization(Ap, Av - S)
 
 @testset "Kinetic energy tensor" begin
         # Check symmetry
@@ -42,3 +49,16 @@ Ek = HJ*Gp
         @test minimum(lam) > 0
 
 end
+
+@testset "Stability" begin
+        # Check that the discretization is energy conservative to rounding error
+        lam = real(eigvals(Matrix(A)))
+        @test minimum(lam) > -1e13
+        @test maximum(lam) < 1e13
+
+        E = H*A + (H*A)'
+        lam = real(eigvals(Matrix(E)))
+        @test minimum(lam) > -1e13
+        @test maximum(lam) < 1e13
+
+        end
