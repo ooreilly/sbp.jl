@@ -82,6 +82,33 @@ function init_operators(nx::Int64, ny::Int64, build_operators::Function,
 
 end
 
+function grids(field::String, nx::Int64, ny::Int64)
+        xp1, h = sbp.Grid.grid_xp(nx)
+        yp1, h = sbp.Grid.grid_xp(ny)
+        xm1, h = sbp.Grid.grid_xm(nx + 1)
+        ym1, h = sbp.Grid.grid_xm(ny + 1)
+
+        if field == "p"
+                xm = sbp.Grid.grid_2d_x(xm1, ny + 1)
+                ym = sbp.Grid.grid_2d_y(ym1, nx + 1)
+                return xm, ym
+        elseif field == "v1"
+                xp = sbp.Grid.grid_2d_x(xp1, ny + 1)
+                ym = sbp.Grid.grid_2d_y(ym1, nx)
+                return xp, ym
+        elseif field == "v2"
+                xm = sbp.Grid.grid_2d_x(xm1, ny)
+                yp = sbp.Grid.grid_2d_y(yp1, nx + 1)
+                return xm, yp
+        elseif field == "node"
+                xp = sbp.Grid.grid_2d_x(xp1, ny)
+                yp = sbp.Grid.grid_2d_y(yp1, nx)
+                return xp, yp
+        end
+end
+
+        
+
 function pressure_norm(op::AcousticOperators)
         return op.Hp * op.Jp
 end

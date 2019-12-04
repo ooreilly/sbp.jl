@@ -2,14 +2,10 @@ using Test
 using SparseArrays
 using LinearAlgebra
 import sbp
-using sbp.Staggered: build_all_operators_2d, 
-                   build_covariant_basis_mm, 
-                   build_covariant_basis_pm,
-                   build_covariant_basis_mp
 using sbp.StaggeredAcoustic: init_operators, pressure_norm, velocity_norm,
                              energy_norm, contravariant_metric_tensor, 
                              divergence, gradient,
-                             spatial_discretization, sat_pressure
+                             spatial_discretization, sat_pressure, grids
 using sbp.Sparse: diag_block_matrix_2x2
 using sbp.Grid: grid_xp, grid_xm, grid_2d_x, grid_2d_y
 
@@ -42,6 +38,22 @@ S = sat_pressure(ops, Gp)
 H = energy_norm(HJp, HJ, Gp)
 A = spatial_discretization(Ap, Av - S)
 
+
+@testset "Grids" begin
+        xp, yp = grids("p", nx, ny)
+        @test size(xp,1) == (nx + 1) * (ny + 1)
+        @test size(yp,1) == (nx + 1) * (ny + 1)
+        x1, y1 = grids("v1", nx, ny)
+        @test size(x1,1) == (nx + 0) * (ny + 1)
+        @test size(y1,1) == (nx + 0) * (ny + 1)
+        x2, y2 = grids("v2", nx, ny)
+        @test size(x2,1) == (nx + 1) * (ny + 0)
+        @test size(y2,1) == (nx + 1) * (ny + 0)
+        xn, yn = grids("node", nx, ny)
+        @test size(xn,1) == (nx + 0) * (ny + 0)
+        @test size(yn,1) == (nx + 0) * (ny + 0)
+end
+
 @testset "Kinetic energy tensor" begin
         # Check symmetry
         @test isapprox(Ek, (Ek)')
@@ -63,3 +75,4 @@ end
         @test maximum(lam) < 1e13
 
         end
+
