@@ -41,8 +41,7 @@ struct AcousticOperators
 end
 
 function init_operators(nx::Int64, ny::Int64, build_operators::Function,
-                        mapping::Function)
-        fx, fy = mapping(nx, ny)
+                        fx::AbstractArray, fy::AbstractArray)
         pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
         np = (nx + 1) * (ny + 1)
         n1 = nx * (ny + 1)

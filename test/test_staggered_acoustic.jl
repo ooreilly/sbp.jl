@@ -29,7 +29,8 @@ function mapping(nx, ny)
 end
 
 
-ops = init_operators(nx, ny, build_operators, mapping)
+fx, fy = mapping(nx, ny)
+ops = init_operators(nx, ny, build_operators, fx, fy)
 
 HJp = pressure_norm(ops)
 HJ = velocity_norm(ops)
