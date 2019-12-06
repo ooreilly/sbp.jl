@@ -1,5 +1,7 @@
 module Source
 
+using SparseArrays
+
 
 """
 Determine the indices and values of the source discretization stencil that
@@ -18,8 +20,7 @@ alpha : The signed distance from the source location to the nearest grid point
 """
 function source_smoothness(x, xs, p, s)
 
-        e = ones(size(x))
-        idx = argmin(abs.(x-xs*e))
+        idx = argmin(abs.(x .- xs))
         
         # Determine signed distance from source location to nearest point.
         alpha = x[idx] - xs
@@ -59,7 +60,7 @@ function source_smoothness(x, xs, p, s)
 
         # Moment conditions
         e = ones(size(stencil))
-        xl = x[stencil] - e * x[idx];
+        xl = x[stencil] .- x[idx];
         M = zeros(p+1, size(xl, 1))
         for i in 1:p+1
         for j in 1:size(xl, 1)
@@ -84,6 +85,46 @@ function source_smoothness(x, xs, p, s)
         end
         coef = A\b;
 return stencil, coef, alpha
+end
+
+
+function source_discretize_1d(r1_s, p, s, r1, h1)
+        d = spzeros(length(r1))
+        stencil1, coef1, alpha1 = source_smoothness(r1, r1_s, p, s)
+        for i=1:length(stencil1)
+                d[stencil1[i]] = coef1[i] / h1
+        end
+
+        return d
+end
+"""
+d = source_disc(xs,ys, h, gr, J)
+Discretize point source using nearest grid point
+
+Arguments:
+xs, ys : Source location
+h : Grid spacing in parameter space
+gr : grid object that contains X,Y meshgrids.
+J : Jacobian
+
+Returns
+A sparse vector that is zero everywhere except for one index, which is set to
+a weight d = 1/(cell-area).
+"""
+function source_discretize_2d(r1_s, r2_s, p, s, r1, r2, h1, h2)
+        d = spzeros(length(r1)*length(r2))
+        stencil1, coef1, alpha1 = source_smoothness(r1, r1_s, p, s)
+        stencil2, coef2, alpha2 = source_smoothness(r2, r2_s, p, s)
+
+        n2 = length(r2)
+        reci_area = 1 / (h1 * h2)
+        for i=1:length(stencil1)
+        for j=1:length(stencil2)
+          d[stencil2[j] + n2 * stencil1[i]] = coef1[i] * coef2[j] * reci_area
+        end
+        end
+
+        return d
 end
 
 end

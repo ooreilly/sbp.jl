@@ -1,5 +1,5 @@
 import sbp
-using sbp.Source: source_smoothness
+using sbp.Source: source_smoothness, source_discretize_1d, source_discretize_2d
 using Test
 
 tol=1e-12;
@@ -100,3 +100,31 @@ for i=0:(s-1)
         @test (smoothness(coef, stencil, i, xs) < tol) 
 end
 end
+
+@testset "1D source discretization" begin
+nx = 10
+xp, h = sbp.Grid.grid_xp(nx)
+xs = 0.5
+p = 3
+s = 2
+d = source_discretize_1d(xs, p, s, xp, h) 
+@test isapprox(sum(d) * h, 1)
+
+end
+
+@testset "2D source discretization" begin
+nx = 10
+ny = 10
+xp, h1 = sbp.Grid.grid_xp(nx)
+yp, h2 = sbp.Grid.grid_xp(ny)
+xm, h1 = sbp.Grid.grid_xm(nx + 1)
+ym, h2 = sbp.Grid.grid_xm(ny + 1)
+xs = 0.5
+ys = 0.5
+p = 3
+s = 2
+d = source_discretize_2d(xs, ys, p, s, xp, yp, h1, h2) 
+@test isapprox(sum(d) * h1 * h2, 1)
+
+end
+

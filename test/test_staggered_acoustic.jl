@@ -5,7 +5,8 @@ import sbp
 using sbp.StaggeredAcoustic: init_operators, pressure_norm, velocity_norm,
                              energy_norm, contravariant_metric_tensor, 
                              divergence, gradient,
-                             spatial_discretization, sat_pressure, grids
+                             spatial_discretization, pressure_sat, grids, 
+                             pressure_source   
 using sbp.Sparse: diag_block_matrix_2x2
 using sbp.Grid: grid_xp, grid_xm, grid_2d_x, grid_2d_y
 
@@ -34,9 +35,10 @@ Gp = contravariant_metric_tensor(ops)
 Ek = HJ*Gp
 Ap = divergence(ops)
 Av = gradient(ops, Gp)
-S = sat_pressure(ops, Gp)
+S = pressure_sat(ops, Gp)
 H = energy_norm(HJp, HJ, Gp)
 A = spatial_discretization(Ap, Av - S)
+d = pressure_source(ops, 0.5, 0.5, 4, 4) 
 
 
 @testset "Grids" begin
@@ -74,5 +76,6 @@ end
         @test minimum(lam) > -1e13
         @test maximum(lam) < 1e13
 
-        end
+end
+
 

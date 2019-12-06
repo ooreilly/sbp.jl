@@ -15,6 +15,8 @@ using sbp.Metrics: build_jacobian,
 
 
 struct AcousticOperators
+        nx::Int64
+        ny::Int64
         np::Int64
         n1::Int64
         n2::Int64
@@ -76,9 +78,9 @@ function init_operators(nx::Int64, ny::Int64, build_operators::Function,
         Hyi = spdiagm(0 => 1 ./ diag(mp.Hy))
         B1 = Hxi * pm.Bx
         B2 = Hyi * mp.By
-        return AcousticOperators(np, n1, n2, Jp, J1, J2, Jip, Ji1, Ji2, Pc1,
-                                     P1c, Pc2, P2c, D1p, D2p, D1, D2, Hp, H1,
-                                     H2, Gp, B1, B2)
+        return AcousticOperators(nx, ny, np, n1, n2, Jp, J1, J2, Jip, Ji1, Ji2,
+                                     Pc1, P1c, Pc2, P2c, D1p, D2p, D1, D2, Hp,
+                                     H1, H2, Gp, B1, B2)
 
 end
 
@@ -168,13 +170,30 @@ function spatial_discretization(Ap::AbstractArray, Av::AbstractArray)
         return A
 end
 
-function sat_pressure(op::AcousticOperators, G::AbstractArray)
+function pressure_sat(op::AcousticOperators, G::AbstractArray)
         rows = [op.n1, op.n2]
         cols = [op.np]
         S = block_matrix(rows, cols)
         S = block_matrix_insert(S, rows, cols, 1, 1, op.B1)
         S = block_matrix_insert(S, rows, cols, 2, 1, op.B2)
         return G * S
+end
+
+function pressure_source(op::AcousticOperators, 
+                         r1_s::Float64,
+                         r2_s::Float64,
+                         num_moment::Int64,
+                         num_smoothness::Int64)
+        rows = [op.np, op.n1, op.n2]
+        cols = [1]
+        r1, h1 = sbp.Grid.grid_xm(op.nx + 1)
+        r2, h2 = sbp.Grid.grid_xm(op.ny + 1)
+        d = sbp.Source.source_discretize_2d(r1_s, r2_s, num_moment,
+                                            num_smoothness, r1, r2, h1,
+                                            h2) 
+        S = block_matrix(rows, cols)
+        S = block_matrix_insert(S, rows, cols, 1, 1, op.Jip * d)
+        return S
 end
 
 end
