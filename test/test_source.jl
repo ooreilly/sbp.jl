@@ -60,7 +60,7 @@ end
  Source stencil spanning 3 cells (nearest stencil point close to the right
  boundary)
 
- |           |             *
+                 |          *|
  o---o---o---o---o---o---o---o
  1   2   3   4   5   6   7   8
  * : source location
