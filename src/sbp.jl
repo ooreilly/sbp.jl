@@ -8,7 +8,7 @@ include("sparse.jl")
 include("vtk.jl")
 include("test.jl")
 include("source.jl")
-include("dcsrmv.jl")
+include("lmv.jl")
 
 # Time integrators
 include("time_integrators/lsrk4.jl")
