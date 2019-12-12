@@ -36,14 +36,16 @@ function read_vector(type, filename::String; verbose::Bool=false)
         return u
 end
 
-function write_csr_matrix(filename::String, A::SparseMatrixCSC{Float64, Int64}; 
-                          verbose::Bool=false)
+function write_csr_matrix(filename::String, A::SparseMatrixCSC{Tv, Ti}; 
+                          verbose::Bool=false) where {Tv, Ti}
         fh = open(filename, "w")
         B = copy(A')
-        write(fh, B.m)
-        write(fh, B.n)
+        write(fh, sizeof(Tv))
+        write(fh, sizeof(Ti))
+        write(fh, UInt64(B.m))
+        write(fh, UInt64(B.n))
         nnz = length(B.nzval)
-        write(fh, nnz)
+        write(fh, UInt64(nnz))
 
         # Convert to zero-indexing
         rows =  B.colptr .- 1
@@ -59,23 +61,25 @@ function write_csr_matrix(filename::String, A::SparseMatrixCSC{Float64, Int64};
         end
 end
 
-function read_csr_matrix(filename::String; verbose=false::Bool)
+function read_csr_matrix(Tv, Ti, filename::String; verbose=false::Bool)
         fh = open(filename, "r")
-        m = read(fh, Int64)
-        n = read(fh, Int64)
-        nnz = read(fh, Int64)
+        tv = read(fh, sizeof(Tv))
+        ti = read(fh, sizeof(Ti))
+        m = read(fh, UInt64)
+        n = read(fh, UInt64)
+        nnz = read(fh, UInt64)
 
-        colptr = zeros(Int64, m + 1)
+        colptr = zeros(Ti, m + 1)
         for i=1:(m + 1)
                 colptr[i] = read(fh, Int64) + 1
         end
 
-        rowval = zeros(Int64, nnz)
+        rowval = zeros(Ti, nnz)
         for i=1:nnz
                 rowval[i] = read(fh, Int64) + 1
         end
 
-        nzval = zeros(Float64, nnz)
+        nzval = zeros(Tv, nnz)
         for i=1:nnz
                 nzval[i] = read(fh, Float64)
         end

@@ -31,8 +31,8 @@ end
         A[2,3] = 6.0
         sbp.lmv.write_csr_matrix(file, A, verbose=true)
         sbp.lmv.write_csr_matrix(file, A, verbose=false)
-        B = sbp.lmv.read_csr_matrix(file, verbose=true)
-        B = sbp.lmv.read_csr_matrix(file, verbose=false)
+        B = sbp.lmv.read_csr_matrix(Float64, Int64, file, verbose=true)
+        B = sbp.lmv.read_csr_matrix(Float64, Int64, file, verbose=false)
         @test typeof(B) == SparseMatrixCSC{Float64, Int64}
         @test isapprox(A, B)
         rm(file)
