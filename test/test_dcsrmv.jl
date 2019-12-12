@@ -12,7 +12,7 @@ n = 2 << 4
                 x = ones(type, n)
                 sbp.DCSRMV.write_vector(file, x, verbose=true)
                 sbp.DCSRMV.write_vector(file, x, verbose=false)
-                y = sbp.DCSRMV.read_vector(file)
+                y = sbp.DCSRMV.read_vector(type, file)
                 @test typeof(y) == Array{type, 1}
                 @test isapprox(x, y)
         end
@@ -55,4 +55,19 @@ end
         @test isapprox(A, B)
 
         rm(file)
+end
+
+@testset "read/write config" begin
+        file = "config.txt"
+        cfg = Dict("nt" => Int64(1), "dt" => Float64(0.1))
+        sbp.DCSRMV.write_config(file, cfg, verbose=false, skip_types=true)
+        sbp.DCSRMV.write_config(file, cfg, verbose=false)
+        sbp.DCSRMV.write_config(file, cfg, verbose=true)
+        cfg2 = sbp.DCSRMV.read_config(file, verbose=false)
+        cfg2 = sbp.DCSRMV.read_config(file, verbose=true)
+        @test cfg == cfg2
+
+        rm(file)
+
+
 end

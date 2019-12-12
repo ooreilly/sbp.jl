@@ -7,32 +7,12 @@ This code performs sparse CSR matrix- dense vector multiplication on the GPU.
 
 using SparseArrays
 
-vector_type = [Int32, Float32, Float64]
-enum_Int32 = Int32(1)
-enum_Float32 = Int32(2)
-enum_Float64 = Int32(3)
-
-
-function write_vector(filename::String, u::Array{Int32, 1}; verbose::Bool=false)
-        write_vector(filename, u, enum_Int32, verbose=verbose)
-end
-
-function write_vector(filename::String, u::Array{Float32, 1};
-                                        verbose::Bool=false)
-       write_vector(filename, u, enum_Float32, verbose=verbose)
-end
-
-function write_vector(filename::String, u::Array{Float64, 1};
-                                        verbose::Bool=false)
-       write_vector(filename, u, enum_Float64, verbose=verbose)
-end
-
-function write_vector(filename::String, u::Array{T, 1}, enum::Int32;
+function write_vector(filename::String, u::Array{T, 1};
                                         verbose::Bool=false) where T
         fh = open(filename, "w")
-        write(fh, enum)
+        write(fh, sizeof(T))
         n = length(u)
-        write(fh, n)
+        bytes = write(fh, UInt64(n))
         write(fh, u)
         close(fh)
         if verbose
@@ -40,11 +20,11 @@ function write_vector(filename::String, u::Array{T, 1}, enum::Int32;
         end
 end
 
-function read_vector(filename::String; verbose::Bool=false)
+function read_vector(type, filename::String; verbose::Bool=false)
         fh = open(filename, "r")
-        enum = read(fh, Int32)
-        n = read(fh, Int64)
-        type = vector_type[enum]
+        type_size = read(fh, UInt64)
+        n = read(fh, UInt64)
+        @assert(sizeof(type) == type_size)
         u = zeros(type, n)
         for i=1:n
                 @inbounds u[i] = read(fh, type)
@@ -137,7 +117,7 @@ function read_dense_matrix(filename::String; verbose=false::Bool)
         A = zeros(m, n)
         for j=1:n
                 for i=1:m
-                        A[i,j] = read(fh, Float64)
+                        @inbounds A[i,j] = read(fh, Float64)
                 end
         end
 
@@ -148,5 +128,42 @@ function read_dense_matrix(filename::String; verbose=false::Bool)
         return A
 
 end
+
+function write_config(filename::String, args::Dict; verbose=false::Bool,
+                                        skip_types=false::Bool)
+        fh = open(filename, "w")
+        for arg in args
+                if skip_types
+                        println(fh, arg.first, "=", arg.second)
+                else
+                        println(fh, arg.first, ":", string(typeof(arg.second)),
+                                    "=", arg.second)
+                end
+        end
+        close(fh)
+
+        if verbose
+                println("Wrote configuration file: ", filename)
+        end
+end
+
+function read_config(filename::String; verbose=false::Bool)
+        fh = open(filename, "r")
+        cfg = Dict()
+        for ln in eachline(fh)
+                name, tmp = split(ln, ":")
+                typ, value = split(tmp, "=")
+                typ = eval(Meta.parse(typ))
+                cfg[name] = parse(typ, value)
+        end
+        close(fh)
+
+        if verbose
+                println("Read configuration file: ", filename)
+        end
+
+        return cfg
+end
+
 
 end
