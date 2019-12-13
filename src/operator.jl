@@ -65,10 +65,10 @@ function to_matrix(op::OperatorData, m::Int64, n::Int64, is_sparse::Bool=false)
         sm = size(op.interior, 1)
         for i in ml + 1:m - mr
                 for j in 1:sm
-                        if i + op.offset + j > n
+                        if i + op.offset + j - 1 > n
                                 break
                         end
-                        @inbounds A[i,i+op.offset+j] = op.interior[j]
+                        @inbounds A[i,i+op.offset+j - 1] = op.interior[j]
                 end
         end
 
