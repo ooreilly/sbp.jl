@@ -120,7 +120,7 @@ function source_discretize_2d(r1_s, r2_s, p, s, r1, r2, h1, h2)
         reci_area = 1 / (h1 * h2)
         for i=1:length(stencil1)
         for j=1:length(stencil2)
-          d[stencil2[j] + n2 * stencil1[i]] = coef1[i] * coef2[j] * reci_area
+          d[stencil2[j] + n2 * (stencil1[i] - 1)] = coef1[i] * coef2[j] * reci_area
         end
         end
 
