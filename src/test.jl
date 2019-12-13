@@ -59,6 +59,12 @@ function test_first_derivative_sbp(Hp::AbstractArray,
         @test isapprox(Hp*Dp + (Hm*Dm)', B)
 end
 
+function test_first_derivative_sbp(H::AbstractArray, 
+                                   D::AbstractArray,
+                                   B::AbstractArray)
+        @test isapprox(H*D + (H*D)', B)
+end
+
 function test_interpolation_sbp(Hp::AbstractArray, 
                                 Dp::AbstractArray,
                                 Hm::AbstractArray,
