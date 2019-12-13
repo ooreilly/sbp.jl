@@ -41,8 +41,8 @@ end
 
 function build_contravariant_basis(J::AbstractArray, a::CovariantBasis)
         return ContravariantBasis( a.y_r2 ./ J, 
-                                 - a.y_r1 ./ J, 
                                  - a.x_r2 ./ J, 
+                                 - a.y_r1 ./ J, 
                                    a.x_r1 ./ J)
 
 end
