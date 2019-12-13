@@ -38,6 +38,8 @@ struct AcousticOperators
         H1::AbstractArray
         H2::AbstractArray
         Gp::ContravariantMetricTensor
+        G1::ContravariantMetricTensor
+        G2::ContravariantMetricTensor
         B1::AbstractArray
         B2::AbstractArray
 end
@@ -55,6 +57,8 @@ function init_operators(nx::Int64, ny::Int64, build_operators::Function,
         J1 = build_jacobian(a1)
         J2 = build_jacobian(a2)
         bp = build_contravariant_basis(Jp, ap)
+        b1 = build_contravariant_basis(J1, a1)
+        b2 = build_contravariant_basis(J2, a2)
         Jip = spdiagm(0 => 1 ./Jp)
         Ji1 = spdiagm(0 => 1 ./ J1)
         Ji2 = spdiagm(0 => 1 ./ J2)
@@ -63,6 +67,10 @@ function init_operators(nx::Int64, ny::Int64, build_operators::Function,
         J2 = spdiagm(0 => J2)
         Gp = sbp.Metrics.build_contravariant_metric_tensor(bp)
         Gp = contravariant_metric_tensor_to_matrix(Gp)
+        G1 = sbp.Metrics.build_contravariant_metric_tensor(b1)
+        G1 = contravariant_metric_tensor_to_matrix(G1)
+        G2 = sbp.Metrics.build_contravariant_metric_tensor(b2)
+        G2 = contravariant_metric_tensor_to_matrix(G2)
         P1c = pm.Px
         P2c = mp.Py
         Pc1 = mm.Px
@@ -80,7 +88,7 @@ function init_operators(nx::Int64, ny::Int64, build_operators::Function,
         B2 = Hyi * mp.By
         return AcousticOperators(nx, ny, np, n1, n2, Jp, J1, J2, Jip, Ji1, Ji2,
                                      Pc1, P1c, Pc2, P2c, D1p, D2p, D1, D2, Hp,
-                                     H1, H2, Gp, B1, B2)
+                                     H1, H2, Gp, G1, G2, B1, B2)
 
 end
 
@@ -138,6 +146,14 @@ function contravariant_metric_tensor(op::AcousticOperators)
         return block_matrix_2x2(G11, G12, G21, G22)
 end
 
+function modified_contravariant_metric_tensor(op::AcousticOperators)
+        G11 = op.G1.b11
+        G12 = op.Ji1 * op.P1c * op.Jp * op.Gp.b12 * op.Pc2
+        G21 = op.Ji2 * op.P2c * op.Jp * op.Gp.b21 * op.Pc1
+        G22 = op.G2.b22
+        return block_matrix_2x2(G11, G12, G21, G22)
+end
+
 function divergence(op::AcousticOperators)
         rows = [op.np]
         cols = [op.n1, op.n2]
@@ -192,7 +208,7 @@ function pressure_source(op::AcousticOperators,
                                             num_smoothness, r1, r2, h1,
                                             h2) 
         S = block_matrix(rows, cols)
-        S = block_matrix_insert(S, rows, cols, 1, 1, op.Jip * d)
+        S = block_matrix_insert(S, rows, cols, 1, 1, d)
         return S
 end
 
