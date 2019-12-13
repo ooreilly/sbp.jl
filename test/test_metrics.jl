@@ -11,7 +11,7 @@ using sbp.Grid: grid_xp, grid_xm, grid_2d_x, grid_2d_y
 include("../operators/oreilly_petersson_2019/operators.jl")
 using . Operators: build_operators
 nx=10
-ny=10
+ny=20
 
 
 pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
@@ -20,7 +20,7 @@ x1, h = grid_xp(nx)
 y1, h = grid_xp(ny)
 
 x = grid_2d_x(x1, ny)
-y = grid_2d_y(y1, ny)
+y = grid_2d_y(y1, nx)
 
 fx = x
 fy = y

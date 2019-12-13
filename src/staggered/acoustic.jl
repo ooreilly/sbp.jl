@@ -196,4 +196,21 @@ function pressure_source(op::AcousticOperators,
         return S
 end
 
+function pressure_receiver(op::AcousticOperators, 
+                         r1_s::Float64,
+                         r2_s::Float64,
+                         num_moment::Int64,
+                         num_smoothness::Int64)
+        rows = [op.np, op.n1, op.n2]
+        cols = [1]
+        r1, h1 = sbp.Grid.grid_xm(op.nx + 1)
+        r2, h2 = sbp.Grid.grid_xm(op.ny + 1)
+        r = sbp.Source.source_discretize_2d(r1_s, r2_s, num_moment,
+                                            num_smoothness, r1, r2, 1.0,
+                                            1.0) 
+        S = block_matrix(rows, cols)
+        S = block_matrix_insert(S, rows, cols, 1, 1, r)
+        return S
+end
+
 end

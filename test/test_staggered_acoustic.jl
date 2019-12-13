@@ -14,17 +14,18 @@ include("../operators/oreilly_petersson_2019/operators.jl")
 using . Operators: build_operators
 
 nx=10
-ny=10
+ny=20
 
 function mapping(nx, ny)
         x1, h = grid_xp(nx)
         y1, h = grid_xp(ny)
         
-        x = grid_2d_x(x1, ny)
-        y = grid_2d_y(y1, ny)
+        p = grid_2d_x(x1, ny)
+        q = grid_2d_y(y1, nx)
+        x = p
+        y = (1 .+ 0.1 * sin.(p)).*q
         return x, y
 end
-
 
 fx, fy = mapping(nx, ny)
 ops = init_operators(nx, ny, build_operators, fx, fy)

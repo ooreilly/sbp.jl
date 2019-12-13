@@ -17,5 +17,7 @@ include("time_integrators/lsrk4.jl")
 include("staggered.jl")
 include("staggered/acoustic.jl")
 
+# Operators
+include("../operators/oreilly_petersson_2019/operators.jl")
 
 end

@@ -100,8 +100,8 @@ function block_matrix_2x2(a11::AbstractArray,
         n2 = size(a22, 2)
         @assert size(a12, 1) == size(a11, 1)
         @assert size(a12, 2) == size(a22, 2)
-        @assert size(a21, 1) == size(a21, 2)
-        @assert size(a21, 2) == size(a22, 1)
+        @assert size(a21, 1) == size(a22, 1)
+        @assert size(a21, 2) == size(a11, 1)
         rows = [m1, m2]
         cols = [n1, n2]
         A = block_matrix(rows, cols)

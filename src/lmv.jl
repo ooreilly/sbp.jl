@@ -50,9 +50,10 @@ function write_csr_matrix(filename::String, A::SparseMatrixCSC{Tv, Ti};
         # Convert to zero-indexing
         rows =  B.colptr .- 1
         cols =  B.rowval .- 1
-        write(fh, rows)
-        write(fh, cols)
-        write(fh, B.nzval)
+
+        write(fh, Ti.(rows))
+        write(fh, Ti.(cols))
+        write(fh, Tv.(B.nzval))
         close(fh)
 
         if verbose
@@ -63,28 +64,31 @@ end
 
 function read_csr_matrix(Tv, Ti, filename::String; verbose=false::Bool)
         fh = open(filename, "r")
-        tv = read(fh, sizeof(Tv))
-        ti = read(fh, sizeof(Ti))
+        tv = read(fh, UInt64)
+        ti = read(fh, UInt64)
         m = read(fh, UInt64)
         n = read(fh, UInt64)
         nnz = read(fh, UInt64)
 
         colptr = zeros(Ti, m + 1)
         for i=1:(m + 1)
-                colptr[i] = read(fh, Int64) + 1
+                colptr[i] = read(fh, Ti) + 1
         end
 
         rowval = zeros(Ti, nnz)
         for i=1:nnz
-                rowval[i] = read(fh, Int64) + 1
+                rowval[i] = read(fh, Ti) + 1
         end
 
         nzval = zeros(Tv, nnz)
         for i=1:nnz
-                nzval[i] = read(fh, Float64)
+                nzval[i] = read(fh, Tv)
         end
         close(fh)
 
+        println("read colptr:", colptr)
+        println("read rowval:", rowval)
+        println(nzval)
         B = SparseMatrixCSC(m, n, colptr, rowval, nzval)
         A = copy(B')
 
@@ -137,7 +141,7 @@ function write_config(filename::String, args::Dict; verbose=false::Bool,
                                         skip_types=false::Bool)
         fh = open(filename, "w")
         for arg in args
-                if skip_types
+                if skip_types == true
                         println(fh, arg.first, "=", arg.second)
                 else
                         println(fh, arg.first, ":", string(typeof(arg.second)),
