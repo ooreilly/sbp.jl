@@ -60,7 +60,7 @@ end
         interior = zeros(3)
         interior[1] = -0.5
         interior[end] = 0.5
-        offset = -2
+        offset = -1
         
         Op = OperatorData(version, left, right, interior, offset)
         write_operator("test.txt", Op)
