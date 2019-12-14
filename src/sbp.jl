@@ -17,6 +17,9 @@ include("time_integrators/lsrk4.jl")
 include("staggered.jl")
 include("staggered/acoustic.jl")
 
+# Collocated operators and discretizations
+include("collocated.jl")
+
 # Operators
 include("../operators/oreilly_petersson_2019/operators.jl")
 include("../operators/strand_1994/operators.jl")
