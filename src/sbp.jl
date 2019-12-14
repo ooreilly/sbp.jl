@@ -19,5 +19,6 @@ include("staggered/acoustic.jl")
 
 # Operators
 include("../operators/oreilly_petersson_2019/operators.jl")
+include("../operators/strand_1994/operators.jl")
 
 end
