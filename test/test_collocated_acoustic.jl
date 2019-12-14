@@ -2,11 +2,15 @@ using Test
 using SparseArrays
 using LinearAlgebra
 import sbp
+using sbp.CollocatedAcoustic: init_operators, pressure_norm, velocity_norm,
+                             energy_norm, contravariant_metric_tensor, 
+                             divergence, gradient,
+                             spatial_discretization, pressure_sat, grid,
+                             pressure_source   
 using sbp.Sparse: diag_block_matrix_2x2
 using sbp.Grid: grid_xp, grid_xm, grid_2d_x, grid_2d_y
 
-st = sbp.StaggeredAcoustic
-sop = sbp.OP2019
+st=sbp.Strand1994
 
 nx=10
 ny=20
@@ -23,33 +27,25 @@ function mapping(nx, ny)
 end
 
 fx, fy = mapping(nx, ny)
-ops = st.init_operators(nx, ny, sop.build_operators, fx, fy)
+desc_D, desc_H = st.load_description(order=2)
+ops = init_operators(nx, ny, st, desc_D, desc_H, fx, fy)
 
-HJp = st.pressure_norm(ops)
-HJ = st.velocity_norm(ops)
-Gp = st.contravariant_metric_tensor(ops)
+HJp = pressure_norm(ops)
+HJ = velocity_norm(ops)
+Gp = contravariant_metric_tensor(ops)
 Ek = HJ*Gp
-Ap = st.divergence(ops)
-Av = st.gradient(ops, Gp)
-S = st.pressure_sat(ops, Gp)
-H = st.energy_norm(HJp, HJ, Gp)
-A = st.spatial_discretization(Ap, Av - S)
-d = st.pressure_source(ops, 0.5, 0.5, 4, 4) 
+Ap = divergence(ops)
+Av = gradient(ops, Gp)
+S = pressure_sat(ops, Gp)
+H = energy_norm(HJp, HJ, Gp)
+A = spatial_discretization(Ap, Av - S)
+d = pressure_source(ops, 0.5, 0.5, 4, 4) 
 
 
 @testset "Grids" begin
-        xp, yp = st.grids("p", nx, ny)
-        @test size(xp,1) == (nx + 1) * (ny + 1)
-        @test size(yp,1) == (nx + 1) * (ny + 1)
-        x1, y1 = st.grids("v1", nx, ny)
-        @test size(x1,1) == (nx + 0) * (ny + 1)
-        @test size(y1,1) == (nx + 0) * (ny + 1)
-        x2, y2 = st.grids("v2", nx, ny)
-        @test size(x2,1) == (nx + 1) * (ny + 0)
-        @test size(y2,1) == (nx + 1) * (ny + 0)
-        xn, yn = st.grids("node", nx, ny)
-        @test size(xn,1) == (nx + 0) * (ny + 0)
-        @test size(yn,1) == (nx + 0) * (ny + 0)
+        x, y = grid(nx, ny)
+        @test size(x,1) == nx * ny
+        @test size(y,1) == nx * ny
 end
 
 @testset "Kinetic energy tensor" begin

@@ -19,6 +19,7 @@ include("staggered/acoustic.jl")
 
 # Collocated operators and discretizations
 include("collocated.jl")
+include("collocated/acoustic.jl")
 
 # Operators
 include("../operators/oreilly_petersson_2019/operators.jl")

@@ -7,7 +7,7 @@ using sbp.Test:test_first_derivative, test_quadrature, test_interpolation,
         test_first_derivative_sbp, test_interpolation_sbp
 include("operators.jl")
 
-using . Operators: build_operators, ODp, ODm, OPp, OPm
+using . OP2019: build_operators, ODp, ODm, OPp, OPm
 
 m = 10 
 

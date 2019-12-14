@@ -8,13 +8,12 @@ using sbp.Metrics: build_jacobian, build_contravariant_basis,
 using sbp.Staggered: build_all_operators_2d, build_covariant_basis_mm
 using sbp.Grid: grid_xp, grid_xm, grid_2d_x, grid_2d_y
 
-include("../operators/oreilly_petersson_2019/operators.jl")
-using . Operators: build_operators
+sop = sbp.OP2019
 nx=10
 ny=20
 
 
-pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
+pp, mm, pm, mp = build_all_operators_2d(sop.build_operators, nx, ny)
 
 x1, h = grid_xp(nx)
 y1, h = grid_xp(ny)

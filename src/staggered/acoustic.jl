@@ -92,6 +92,19 @@ function init_operators(nx::Int64, ny::Int64, build_operators::Function,
 
 end
 
+function grid_points(field::String, nx::Int64, ny::Int64)
+        if field == "p"
+                return nx+1, ny+1
+        elseif field == "v1"
+                return nx+1, ny
+        elseif field == "v2"
+                return nx, ny+1
+        elseif field == "node"
+                return nx, ny
+        end
+end
+
+
 function grids(field::String, nx::Int64, ny::Int64)
         xp1, h = sbp.Grid.grid_xp(nx)
         yp1, h = sbp.Grid.grid_xp(ny)

@@ -1,42 +1,38 @@
 using Test
 import sbp
-using sbp.Staggered: boundary_matrix_p, boundary_matrix_m, build_operators_2d,
-                     build_all_operators_2d, build_covariant_basis_mm, 
-                     build_covariant_basis_pm, 
-                     build_covariant_basis_mp
 
 
-include("../operators/oreilly_petersson_2019/operators.jl")
-using . Operators: build_operators
+st = sbp.Staggered
+sop = sbp.OP2019
 
 nx = 10
 ny = 20
-xp, xm, h, Dxp, Dxm, Hxp, Hxm, Pxp, Pxm = build_operators(nx)
-yp, ym, h, Dyp, Dym, Hyp, Hym, Pyp, Pym = build_operators(ny)
+xp, xm, h, Dxp, Dxm, Hxp, Hxm, Pxp, Pxm = sop.build_operators(nx)
+yp, ym, h, Dyp, Dym, Hyp, Hym, Pyp, Pym = sop.build_operators(ny)
 
 @testset "Boundary matrix"  begin
-        Bp = boundary_matrix_p(nx)
+        Bp = st.boundary_matrix_p(nx)
         @test size(Bp, 1) == nx
         @test size(Bp, 2) == nx + 1
         @test isapprox(sum(Bp), 0)
 
-        Bp = boundary_matrix_p(nx, false)
+        Bp = st.boundary_matrix_p(nx, false)
         @test size(Bp, 1) == nx
         @test size(Bp, 2) == nx + 1
         @test isapprox(sum(Bp), 0)
 
-        Bm = boundary_matrix_m(nx+1)
+        Bm = st.boundary_matrix_m(nx+1)
         @test size(Bm, 1) == nx + 1
         @test size(Bm, 2) == nx
         @test isapprox(sum(Bm), 0)
 end
 
 @testset "2D operators" begin
-        Bxp = boundary_matrix_p(nx)
-        Bxm = boundary_matrix_m(nx+1)
-        Byp = boundary_matrix_p(ny)
-        Bym = boundary_matrix_m(ny+1)
-        pp = build_operators_2d(Dxp, Dyp, Pxp, Pyp, Hxp, Hyp, Bxp, Byp)
+        Bxp = st.boundary_matrix_p(nx)
+        Bxm = st.boundary_matrix_m(nx+1)
+        Byp = st.boundary_matrix_p(ny)
+        Bym = st.boundary_matrix_m(ny+1)
+        pp = st.build_operators_2d(Dxp, Dyp, Pxp, Pyp, Hxp, Hyp, Bxp, Byp)
         @test pp.nx == nx
         @test pp.ny == ny
         @test size(pp.Dx, 1) == nx * ny
@@ -44,7 +40,7 @@ end
         @test size(pp.Dy, 1) == nx * ny
         @test size(pp.Dy, 2) == nx * (ny + 1)
 
-        pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
+        pp, mm, pm, mp = st.build_all_operators_2d(sop.build_operators, nx, ny)
         @test pp.nx == nx
         @test pp.ny == ny
 
@@ -81,10 +77,10 @@ end
 
 @testset "Covariant basis (cell-centers)" begin
 
-        pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
+        pp, mm, pm, mp = st.build_all_operators_2d(sop.build_operators, nx, ny)
         fx = ones(pp.nx*pp.ny)
         fy = ones(pp.nx*pp.ny)
-        a = build_covariant_basis_mm(fx, fy, mm, pm)
+        a = st.build_covariant_basis_mm(fx, fy, mm, pm)
 
         x_r1 = zeros(mm.nx * mm.ny) 
         x_r2 = zeros(mm.nx * mm.ny) 
@@ -103,10 +99,10 @@ end
 
 @testset "Covariant basis (v1)" begin
 
-        pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
+        pp, mm, pm, mp = st.build_all_operators_2d(sop.build_operators, nx, ny)
         fx = ones(pp.nx * pp.ny)
         fy = ones(pp.nx * pp.ny)
-        a = build_covariant_basis_pm(fx, fy, mm, pm, mp)
+        a = st.build_covariant_basis_pm(fx, fy, mm, pm, mp)
 
         x_r1 = zeros(pm.nx * pm.ny) 
         x_r2 = zeros(pm.nx * pm.ny) 
@@ -125,10 +121,10 @@ end
 
 @testset "Covariant basis (v2)" begin
 
-        pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
+        pp, mm, pm, mp = st.build_all_operators_2d(sop.build_operators, nx, ny)
         fx = ones(pp.nx * pp.ny)
         fy = ones(pp.nx * pp.ny)
-        a = build_covariant_basis_mp(fx, fy, mm, pm, mp)
+        a = st.build_covariant_basis_mp(fx, fy, mm, pm, mp)
 
         x_r1 = zeros(mp.nx * mp.ny) 
         x_r2 = zeros(mp.nx * mp.ny) 
