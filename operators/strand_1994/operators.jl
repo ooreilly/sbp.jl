@@ -13,6 +13,9 @@ function load_description(;path=""::String, order=2::Int32, verbose=false::Bool)
         if order==2
                 desc_D = sbp.Operator.read_operator(string(path, "D_21.txt"))
                 desc_H = sbp.Operator.read_operator(string(path, "H_21.txt"))
+        elseif order==4
+                desc_D = sbp.Operator.read_operator(string(path, "D_42.txt"))
+                desc_H = sbp.Operator.read_operator(string(path, "H_42.txt"))
         else
            error("No operators implemented for order = ", order)
         end

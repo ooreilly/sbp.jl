@@ -18,6 +18,7 @@ B[end,end] = 1
 
 @test_throws UndefVarError st.load_descrption(order=10)
 desc_D21, desc_H21 = st.load_description(order=2)
+desc_D42, desc_H42 = st.load_description(order=4)
 
 @testset "D_21, H_21" begin
         x, h, D, H = st.build_operators(desc_D21, desc_H21, m)
@@ -28,5 +29,14 @@ desc_D21, desc_H21 = st.load_description(order=2)
         test_first_derivative_sbp(H, D, B)
 end
 
+
+@testset "D_42, H_42" begin
+        x, h, D, H = st.build_operators(desc_D42, desc_H42, m)
+        ml = size(desc_D42.left, 1)
+        mr = size(desc_D42.right, 1)
+        test_first_derivative(D, x, x, 4, 2, ml, mr)
+        test_quadrature(H, x, 3)
+        test_first_derivative_sbp(H, D, B)
+end
 
 
