@@ -157,8 +157,8 @@ function pressure_receiver(op::AcousticOperators,
                          num_smoothness::Int64)
         rows = [op.n, op.n, op.n]
         cols = [1]
-        r1, h1 = sbp.Grid.grid_xm(op.nx)
-        r2, h2 = sbp.Grid.grid_xm(op.ny)
+        r1, h1 = sbp.Grid.grid_xp(op.nx)
+        r2, h2 = sbp.Grid.grid_xp(op.ny)
         r = sbp.Source.source_discretize_2d(r1_s, r2_s, num_moment,
                                             num_smoothness, r1, r2, 1.0,
                                             1.0) 
