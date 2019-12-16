@@ -14,6 +14,11 @@ using Test
         @test isapprox(x[1], 0)
         @test isapprox(x[end], 1.0)
 
+        x, h = grid_xp(n, pad=true)
+        @test length(x) == n + 1
+        @test x[end] == 0
+        @test isapprox(x[end - 1], 1.0)
+
 end
 
 @testset "2D grid vector" begin

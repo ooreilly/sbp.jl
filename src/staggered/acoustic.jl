@@ -105,9 +105,9 @@ function grid_points(field::String, nx::Int64, ny::Int64)
 end
 
 
-function grids(field::String, nx::Int64, ny::Int64)
-        xp1, h = sbp.Grid.grid_xp(nx)
-        yp1, h = sbp.Grid.grid_xp(ny)
+function grids(field::String, nx::Int64, ny::Int64; pad=false:Bool)
+        xp1, h = sbp.Grid.grid_xp(nx, pad)
+        yp1, h = sbp.Grid.grid_xp(ny, pad)
         xm1, h = sbp.Grid.grid_xm(nx + 1)
         ym1, h = sbp.Grid.grid_xm(ny + 1)
 

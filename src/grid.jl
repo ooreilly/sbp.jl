@@ -1,7 +1,11 @@
 module Grid
 
-function grid_xp(n::Int64)
-        x = zeros(n)
+function grid_xp(n::Int64; pad=false::Bool)
+        if pad
+                x = zeros(n + 1)
+        else
+                x = zeros(n)
+        end
         h = 1.0 / (n - 1)
         for i in 1:n
                 x[i] = (i - 1) * h
