@@ -106,26 +106,27 @@ end
 
 
 function grids(field::String, nx::Int64, ny::Int64; pad=false:Bool)
-        xp1, h = sbp.Grid.grid_xp(nx, pad)
-        yp1, h = sbp.Grid.grid_xp(ny, pad)
-        xm1, h = sbp.Grid.grid_xm(nx + 1)
-        ym1, h = sbp.Grid.grid_xm(ny + 1)
+        xp1, h = sbp.Grid.grid_xp(nx, pad=pad)
+        yp1, h = sbp.Grid.grid_xp(ny, pad=pad)
+
+        xm1, h = sbp.Grid.grid_xm(nx+1)
+        ym1, h = sbp.Grid.grid_xm(ny+1)
 
         if field == "p"
-                xm = sbp.Grid.grid_2d_x(xm1, ny + 1)
-                ym = sbp.Grid.grid_2d_y(ym1, nx + 1)
+                xm = sbp.Grid.grid_2d_x(xm1, length(ym1))
+                ym = sbp.Grid.grid_2d_y(ym1, length(xm1))
                 return xm, ym
         elseif field == "v1"
-                xp = sbp.Grid.grid_2d_x(xp1, ny + 1)
-                ym = sbp.Grid.grid_2d_y(ym1, nx)
+                xp = sbp.Grid.grid_2d_x(xp1, length(ym1))
+                ym = sbp.Grid.grid_2d_y(ym1, length(xp1))
                 return xp, ym
         elseif field == "v2"
-                xm = sbp.Grid.grid_2d_x(xm1, ny)
-                yp = sbp.Grid.grid_2d_y(yp1, nx + 1)
+                xm = sbp.Grid.grid_2d_x(xm1, length(yp1))
+                yp = sbp.Grid.grid_2d_y(yp1, length(xm1))
                 return xm, yp
         elseif field == "node"
-                xp = sbp.Grid.grid_2d_x(xp1, ny)
-                yp = sbp.Grid.grid_2d_y(yp1, nx)
+                xp = sbp.Grid.grid_2d_x(xp1, length(yp1))
+                yp = sbp.Grid.grid_2d_y(yp1, length(xp1))
                 return xp, yp
         end
 end
