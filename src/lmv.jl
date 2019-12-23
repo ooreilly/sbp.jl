@@ -86,9 +86,6 @@ function read_csr_matrix(Tv, Ti, filename::String; verbose=false::Bool)
         end
         close(fh)
 
-        println("read colptr:", colptr)
-        println("read rowval:", rowval)
-        println(nzval)
         B = SparseMatrixCSC(m, n, colptr, rowval, nzval)
         A = copy(B')
 
