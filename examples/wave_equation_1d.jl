@@ -1,5 +1,6 @@
 """
-Discretize the acoustic wave equation in 1D staggered SBP-SAT
+Discretize the acoustic wave equation in 1D using staggered SBP operators.
+Weakly impose a homogeneous boundary condition on each boundary.
 """
 
 using SparseArrays
