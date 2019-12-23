@@ -12,8 +12,9 @@ sop = sbp.OP2019
 nx=10
 ny=20
 
-
-pp, mm, pm, mp = build_all_operators_2d(sop.build_operators, nx, ny)
+desc = sop.load_description()
+builder = n -> sop.build_operators(desc, n)
+pp, mm, pm, mp = build_all_operators_2d(builder, nx, ny)
 
 x1, h = grid_xp(nx)
 y1, h = grid_xp(ny)

@@ -7,8 +7,10 @@ sop = sbp.OP2019
 
 nx = 10
 ny = 20
-xp, xm, h, Dxp, Dxm, Hxp, Hxm, Pxp, Pxm = sop.build_operators(nx)
-yp, ym, h, Dyp, Dym, Hyp, Hym, Pyp, Pym = sop.build_operators(ny)
+
+desc = sop.load_description()
+xp, xm, h, Dxp, Dxm, Hxp, Hxm, Pxp, Pxm = sop.build_operators(desc, nx)
+yp, ym, h, Dyp, Dym, Hyp, Hym, Pyp, Pym = sop.build_operators(desc, ny)
 
 @testset "Boundary matrix"  begin
         Bp = st.boundary_matrix_p(nx)
@@ -40,7 +42,8 @@ end
         @test size(pp.Dy, 1) == nx * ny
         @test size(pp.Dy, 2) == nx * (ny + 1)
 
-        pp, mm, pm, mp = st.build_all_operators_2d(sop.build_operators, nx, ny)
+        builder = n -> sop.build_operators(desc, n)
+        pp, mm, pm, mp = st.build_all_operators_2d(builder, nx, ny)
         @test pp.nx == nx
         @test pp.ny == ny
 
@@ -77,7 +80,8 @@ end
 
 @testset "Covariant basis (cell-centers)" begin
 
-        pp, mm, pm, mp = st.build_all_operators_2d(sop.build_operators, nx, ny)
+        builder = n -> sop.build_operators(desc, n)
+        pp, mm, pm, mp = st.build_all_operators_2d(builder, nx, ny)
         fx = ones(pp.nx*pp.ny)
         fy = ones(pp.nx*pp.ny)
         a = st.build_covariant_basis_mm(fx, fy, mm, pm)
@@ -98,8 +102,9 @@ end
 end
 
 @testset "Covariant basis (v1)" begin
-
-        pp, mm, pm, mp = st.build_all_operators_2d(sop.build_operators, nx, ny)
+                                                          
+        builder = n -> sop.build_operators(desc, n)
+        pp, mm, pm, mp = st.build_all_operators_2d(builder, nx, ny)
         fx = ones(pp.nx * pp.ny)
         fy = ones(pp.nx * pp.ny)
         a = st.build_covariant_basis_pm(fx, fy, mm, pm, mp)
@@ -121,7 +126,8 @@ end
 
 @testset "Covariant basis (v2)" begin
 
-        pp, mm, pm, mp = st.build_all_operators_2d(sop.build_operators, nx, ny)
+        builder = n -> sop.build_operators(desc, n)
+        pp, mm, pm, mp = st.build_all_operators_2d(builder, nx, ny)
         fx = ones(pp.nx * pp.ny)
         fy = ones(pp.nx * pp.ny)
         a = st.build_covariant_basis_mp(fx, fy, mm, pm, mp)

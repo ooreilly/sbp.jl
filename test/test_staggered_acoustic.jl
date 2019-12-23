@@ -8,6 +8,7 @@ using sbp.Grid: grid_xp, grid_xm, grid_2d_x, grid_2d_y
 st = sbp.StaggeredAcoustic
 sop = sbp.OP2019
 
+
 nx=10
 ny=20
 
@@ -23,7 +24,9 @@ function mapping(nx, ny)
 end
 
 fx, fy = mapping(nx, ny)
-ops = st.init_operators(nx, ny, sop.build_operators, fx, fy)
+desc = sop.load_description()
+builder = n -> sop.build_operators(desc, n)
+ops = st.init_operators(nx, ny, builder, fx, fy)
 
 HJp = st.pressure_norm(ops)
 HJ = st.velocity_norm(ops)

@@ -44,7 +44,8 @@ struct AcousticOperators
         B2::AbstractArray
 end
 
-function init_operators(nx::Int64, ny::Int64, build_operators::Function,
+function init_operators(nx::Int64, ny::Int64, 
+                        build_operators::Function,
                         fx::AbstractArray, fy::AbstractArray)
         pp, mm, pm, mp = build_all_operators_2d(build_operators, nx, ny)
         np = (nx + 1) * (ny + 1)
@@ -105,7 +106,7 @@ function grid_points(field::String, nx::Int64, ny::Int64)
 end
 
 
-function grids(field::String, nx::Int64, ny::Int64; pad=false:Bool)
+function grids(field::String, nx::Int64, ny::Int64; pad=false::Bool)
         xp1, h = sbp.Grid.grid_xp(nx, pad=pad)
         yp1, h = sbp.Grid.grid_xp(ny, pad=pad)
 

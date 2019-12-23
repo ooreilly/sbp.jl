@@ -7,35 +7,36 @@ using sbp.Test:test_first_derivative, test_quadrature, test_interpolation,
         test_first_derivative_sbp, test_interpolation_sbp
 include("operators.jl")
 
-using . OP2019: build_operators, ODp, ODm, OPp, OPm
+using . OP2019: build_operators, load_description
 
 m = 10 
 
-xp, xm, h, Dp, Dm, Hp, Hm, Pp, Pm = build_operators(m)
+desc = load_description()
+xp, xm, h, Dp, Dm, Hp, Hm, Pp, Pm = build_operators(desc, m)
 
 @time begin
 
 @testset "Dp_42" begin
-        ml = size(ODp.left, 1)
-        mr = size(ODp.right, 1)
+        ml = size(desc.Dp.left, 1)
+        mr = size(desc.Dp.right, 1)
         test_first_derivative(Dp, xp, xm, 4, 2, ml, mr)
 end
 
 @testset "Dm_42" begin
-        ml = size(ODm.left, 1)
-        mr = size(ODm.right, 1)
+        ml = size(desc.Dm.left, 1)
+        mr = size(desc.Dm.right, 1)
         test_first_derivative(Dm, xm, xp, 4, 2, ml, mr)
 end
 
 @testset "Pp_42" begin
-        ml = size(OPp.left, 1)
-        mr = size(OPp.right, 1)
+        ml = size(desc.Pp.left, 1)
+        mr = size(desc.Pp.right, 1)
         test_interpolation(Pp, xp, xm, 3, 1, ml, mr)
 end
 
 @testset "Pm_42" begin
-        ml = size(OPm.left, 1)
-        mr = size(OPm.right, 1)
+        ml = size(desc.Pm.left, 1)
+        mr = size(desc.Pm.right, 1)
         test_interpolation(Pm, xm, xp, 3, 1, ml, mr)
 end
 
@@ -61,5 +62,3 @@ end
 end
 
 end
-
-
