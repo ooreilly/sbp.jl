@@ -67,13 +67,13 @@ end
 @testset "Stability" begin
         # Check that the discretization is energy conservative to rounding error
         lam = real(eigvals(Matrix(A)))
-        @test minimum(lam) > -1e13
-        @test maximum(lam) < 1e13
+        @test minimum(lam) > -1e-13
+        @test maximum(lam) < 1e-13
 
         E = H*A + (H*A)'
         lam = real(eigvals(Matrix(E)))
-        @test minimum(lam) > -1e13
-        @test maximum(lam) < 1e13
+        @test minimum(lam) > -1e-13
+        @test maximum(lam) < 1e-13
 
 end
 
