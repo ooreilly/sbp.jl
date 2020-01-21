@@ -17,6 +17,7 @@ Clone the repository and install this package and its dependencies using Julia's
 At the repository root directory, open Julia, and press `]` to go to package manner. Type
 ```
 pkg> add .
+pkg> activate .
 
 ```
 Type `ctrl` + `d` to exit.

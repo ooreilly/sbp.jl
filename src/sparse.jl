@@ -1,6 +1,7 @@
 module Sparse
 using SparseArrays
 
+
 """
  Allocates a block sparse matrix that stores nnz non-zero entries. 
  The matrix contains only zeros after allocation.

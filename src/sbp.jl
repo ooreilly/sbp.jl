@@ -10,9 +10,12 @@ include("test.jl")
 include("source.jl")
 include("table.jl")
 include("lmv.jl")
+include("mms.jl")
+include("boundary_operator.jl")
 
 # Time integrators
 include("time_integrators/lsrk4.jl")
+include("time_integrators/staggered_rk4.jl")
 
 # Operators
 include("../operators/oreilly_petersson_2019/operators.jl")

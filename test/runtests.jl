@@ -10,6 +10,7 @@ include("test_source.jl")
 include("test_lsrk4.jl")
 include("test_lmv.jl")
 include("test_table.jl")
+include("test_mms.jl")
 
 # Operators
 include("../operators/oreilly_petersson_2019/test_operators.jl")
