@@ -12,12 +12,9 @@ numerical examples presented in the repository
 https://github.com/ooreilly/sbp. 
 
 ## Installation
-Clone the repository and install this package and its dependencies using Julia's package manager.
-
-At the repository root directory, open Julia, and press `]` to go to package manner. Type
+Open Julia, and press `]` to go to package manner. Type
 ```
-pkg> add .
-pkg> activate .
+pkg> add https://github.com/ooreilly/sbp.jl/.
 
 ```
 Type `ctrl` + `d` to exit.
