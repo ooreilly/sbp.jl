@@ -42,8 +42,8 @@ function write_csr_matrix(filename::String, A::SparseMatrixCSC{Tv, Ti};
         B = copy(A')
         write(fh, sizeof(Tv))
         write(fh, sizeof(Ti))
-        write(fh, UInt64(B.m))
         write(fh, UInt64(B.n))
+        write(fh, UInt64(B.m))
         nnz = length(B.nzval)
         write(fh, UInt64(nnz))
 
@@ -57,7 +57,7 @@ function write_csr_matrix(filename::String, A::SparseMatrixCSC{Tv, Ti};
         close(fh)
 
         if verbose
-                println("Wrote CSR matrix <", B.m, " x ", B.n, "> containing ",
+                println("Wrote CSR matrix <", A.m, " x ", A.n, "> containing ",
                         nnz, " non-zeros to ", filename) 
         end
 end
@@ -86,11 +86,11 @@ function read_csr_matrix(Tv, Ti, filename::String; verbose=false::Bool)
         end
         close(fh)
 
-        B = SparseMatrixCSC(m, n, colptr, rowval, nzval)
+        B = SparseMatrixCSC(n, m, colptr, rowval, nzval)
         A = copy(B')
 
         if verbose
-                println("Read CSR matrix <", B.m, " x ", B.n, "> containing ",
+                println("Read CSR matrix <", A.m, " x ", A.n, "> containing ",
                         nnz, " non-zeros from ", filename) 
         end
 

@@ -2,6 +2,7 @@ using Test
 using SparseArrays
 import sbp
 
+m = 2 << 5
 n = 2 << 4
 
 
@@ -22,7 +23,7 @@ end
 
 @testset "read/write CSR matrix" begin
         file = "A.bin"
-        A = spzeros(n, n)
+        A = spzeros(m, n)
         A[1,1] = 1.0
         A[1,2] = 2.0
         A[1,3] = 3.0
